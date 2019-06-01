@@ -144,7 +144,7 @@ steps:
   waitFor:
   - 'HelmPackage'
 
-  - id: 'HelmCanaryUpgradeTest'
+- id: 'HelmCanaryUpgradeTest'
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - test
