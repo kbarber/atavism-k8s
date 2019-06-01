@@ -12,5 +12,5 @@ maintainers:
 name: atavism
 sources:
 - https://github.com/bobsh/atavism-k8s
-tillerVersion: '>=2.13.1'
+tillerVersion: '>=2.14.0'
 version: 1.0.0
