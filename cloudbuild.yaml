@@ -51,7 +51,7 @@ steps:
   args:
   - package
   - '--version'
-  - '1.0.0-$REVISION_ID-$SHORT_SHA'
+  - '1.0.0-$SHORT_SHA'
   - '.'
   dir: 'charts/atavism'
   env:
@@ -69,11 +69,11 @@ steps:
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - install
-  - 'atavism-1.0.0-$REVISION_ID-$SHORT_SHA.tar.gz'
+  - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
   - '--namespace'
   - 'test'
-  - '--name=atavism-test-$REVISION_ID-$SHORT_SHA'
+  - '--name=atavism-test-$SHORT_SHA'
   - '--description=CanaryRelease'
   - '--replace'
   - '--verify'
@@ -84,7 +84,7 @@ steps:
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=false'
+  - 'TILLERLESS=true'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmPackage'
@@ -93,7 +93,7 @@ steps:
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - test
-  - 'atavism-test-$REVISION_ID-$SHORT_SHA'
+  - 'atavism-test-$SHORT_SHA'
   - '--cleanup'
   dir: 'charts/atavism'
   env:
@@ -101,7 +101,7 @@ steps:
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=false'
+  - 'TILLERLESS=true'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmCanaryRelease'
@@ -111,14 +111,14 @@ steps:
   args:
   - delete
   - '--purge'
-  - 'atavism-test-$REVISION_ID-$SHORT_SHA'
+  - 'atavism-test-$SHORT_SHA'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=false'
+  - 'TILLERLESS=true'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmPackage'
@@ -130,7 +130,7 @@ steps:
   - gcs
   - push
   - 'bobsh'
-  - 'atavism-1.0.0-$REVISION_ID-$SHORT_SHA.tar.gz'
+  - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--retry'
   dir: 'charts/atavism'
   env:
@@ -149,7 +149,7 @@ steps:
   args:
   - upgrade
   - atavism
-  - 'atavism-1.0.0-$REVISION_ID-$SHORT_SHA.tar.gz'
+  - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
   - '--install'
   - '--verify'
