@@ -76,7 +76,7 @@ steps:
   - '--name=atavism-test-$SHORT_SHA'
   - '--description=CanaryRelease'
   - '--replace'
-  - '--verify'
+#  - '--verify'
   - '--wait'
   dir: 'charts/atavism'
   env:
@@ -152,7 +152,7 @@ steps:
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
   - '--install'
-  - '--verify'
+#  - '--verify'
   - '--wait'
   dir: 'charts/atavism'
   env:
