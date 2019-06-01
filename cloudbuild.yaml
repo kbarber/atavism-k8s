@@ -24,7 +24,7 @@ steps:
   args:
     - '-i'
     - '-e'
-    - "'s/latest/$SHORT_SHA/g'"
+    - 's/latest/$SHORT_SHA/g'
     - 'values.yaml'
   waitFor: ['-']
 
