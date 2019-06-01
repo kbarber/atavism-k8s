@@ -123,7 +123,6 @@ steps:
   - '--parallel'
   - '--debug'
   - '--timeout=1200'
-  - '--namespace=atavism-test-$SHORT_SHA'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
