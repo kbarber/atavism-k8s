@@ -29,6 +29,7 @@ auction:
 
 atavismdb:
   nameOverride: atavismdb
+  fullnameOverride: atavismdb
   mysqlUser: atavism
   mysqlPassword: atavism
   mysqlDatabase: atavism
@@ -46,6 +47,7 @@ atavismdb:
 
 masterdb:
   nameOverride: masterdb
+  fullnameOverride: masterdb
   mysqlUser: atavism
   mysqlPassword: atavism
   mysqlDatabase: master
@@ -63,6 +65,7 @@ masterdb:
 
 contentdb:
   nameOverride: contentdb
+  fullnameOverride: contentdb
   mysqlUser: atavism
   mysqlPassword: atavism
   mysqlDatabase: content
@@ -80,6 +83,7 @@ contentdb:
 
 admindb:
   nameOverride: admindb
+  fullnameOverride: admindb
   mysqlUser: atavism
   mysqlPassword: atavism
   mysqlDatabase: atavism

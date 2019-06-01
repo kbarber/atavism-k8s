@@ -3,19 +3,19 @@ dependencies:
   version: "0.0.5"
   repository: "https://kubernetes-charts-incubator.storage.googleapis.com"
 - name: mysql
-  version: "1.1.1"
+  version: "1.2.0"
   repository: "https://kubernetes-charts.storage.googleapis.com"
   alias: atavismdb
 - name: mysql
-  version: "1.1.1"
+  version: "1.2.0"
   repository: "https://kubernetes-charts.storage.googleapis.com"
   alias: masterdb
 - name: mysql
-  version: "1.1.1"
+  version: "1.2.0"
   repository: "https://kubernetes-charts.storage.googleapis.com"
   alias: admindb
 - name: mysql
-  version: "1.1.1"
+  version: "1.2.0"
   repository: "https://kubernetes-charts.storage.googleapis.com"
   alias: contentdb
 - name: atavism-service

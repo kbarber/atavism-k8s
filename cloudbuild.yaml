@@ -21,6 +21,8 @@ steps:
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - lint
+# Unable to turn this on because of lint issues with mysql chart
+#  - '--strict'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -71,8 +73,6 @@ steps:
   - install
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
-  - '--namespace'
-  - 'test'
   - '--name=atavism-test-$SHORT_SHA'
   - '--description=CanaryRelease'
   - '--replace'
@@ -95,6 +95,7 @@ steps:
   - test
   - 'atavism-test-$SHORT_SHA'
   - '--cleanup'
+  - '--parallel'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -150,6 +151,7 @@ steps:
   - test
   - 'atavism'
   - '--cleanup'
+  - '--parallel'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -203,3 +205,21 @@ steps:
   waitFor:
   - 'HelmCanaryTest'
   - 'HelmCanaryUpgradeTest'
+
+- id: 'HelmProdUpgradeTest'
+  name: 'gcr.io/$PROJECT_ID/helm'
+  args:
+  - test
+  - 'atavism'
+  - '--cleanup'
+  - '--parallel'
+  dir: 'charts/atavism'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-prod'
+  - 'HELM_REPO_NAME=incubator'
+  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
+  - 'TILLERLESS=false'
+  - 'TILLER_NAMESPACE=kube-system'
+  waitFor:
+  - 'HelmProdUpgrade'
