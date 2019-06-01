@@ -23,7 +23,8 @@ steps:
   entrypoint: 'sed'
   args:
     - '-i'
-    - '"s/latest/$SHORT_SHA/g"'
+    - '-e'
+    - "'s/latest/$SHORT_SHA/g'"
     - 'values.yaml'
   waitFor: ['-']
 
