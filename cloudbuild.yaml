@@ -46,29 +46,13 @@ steps:
   waitFor:
     - 'FixContainerVersion'
 
-- id: 'HelmDeps'
-  name: 'gcr.io/$PROJECT_ID/helm'
-  args:
-  - dependency
-  - update
-  - '--debug'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
-  waitFor:
-    - 'FixContainerVersion'
-
 - id: 'HelmPackage'
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - package
   - '--debug'
   - '--version'
+  - '--dependency-update'
   - '1.0.0-$SHORT_SHA'
 # Need to set this up
 #  - '--keyring'
@@ -83,9 +67,7 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  waitFor:
-  - 'HelmDeps'
-  - 'HelmLint'
+  waitFor: ['-']
 
 - id: 'HelmCanaryRelease'
   name: 'gcr.io/$PROJECT_ID/helm'
