@@ -17,6 +17,16 @@ steps:
   waitFor:
   - 'ContainerBuild'
 
+- id: 'FixContainerVersion'
+  name: 'ubuntu:18.04'
+  dir: 'charts/atavism/ourcharts/atavism-service'
+  entrypoint: 'sed'
+  args:
+    - '-i'
+    - '"s/latest/$SHORT_SHA/g"'
+    - 'values.yaml'
+  waitFor: ['-']
+
 - id: 'HelmLint'
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
@@ -32,7 +42,8 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  waitFor: ['-']
+  waitFor:
+    - 'FixContainerVersion'
 
 - id: 'HelmDeps'
   name: 'gcr.io/$PROJECT_ID/helm'
@@ -48,7 +59,8 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  waitFor: ['-']
+  waitFor:
+    - 'FixContainerVersion'
 
 - id: 'HelmPackage'
   name: 'gcr.io/$PROJECT_ID/helm'

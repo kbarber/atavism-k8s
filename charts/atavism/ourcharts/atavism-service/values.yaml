@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: gcr.io/atavism/atavism
-  tag: b1e6b49
+  tag: latest
   pullPolicy: IfNotPresent
 
 nameOverride: ""
