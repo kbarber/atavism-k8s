@@ -192,13 +192,15 @@ steps:
   - gcs
   - push
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
-  - 'gs://bobsh/charts'
+  - 'bobsh'
   - '--retry'
   - '--debug'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
+  - 'HELM_REPO_NAME=bobsh'
+  - 'HELM_REPO_URL=gs://bob.sh/charts'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   - 'GCS_PLUGIN_VERSION=0.2.0'
