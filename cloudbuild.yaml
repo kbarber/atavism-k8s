@@ -91,8 +91,8 @@ steps:
   - '--wait'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
@@ -113,8 +113,8 @@ steps:
   - '--namespace=atavism-test-$SHORT_SHA'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
@@ -132,8 +132,8 @@ steps:
   - 'atavism-test-$SHORT_SHA'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
@@ -158,7 +158,7 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-acceptance'
   - 'HELM_REPO_NAME=bobsh'
   - 'HELM_REPO_URL=gs://bobsh/charts'
   - 'TILLERLESS=false'
@@ -179,7 +179,7 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-acceptance'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
@@ -199,8 +199,8 @@ steps:
   - '--debug'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
   - 'HELM_REPO_NAME=bobsh'
   - 'HELM_REPO_URL=gs://bobsh/charts'
   - 'TILLERLESS=false'
