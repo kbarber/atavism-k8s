@@ -84,6 +84,7 @@ steps:
   - '--description=CanaryRelease'
   - '--replace'
   - '--debug'
+  - '--namespace=atavism-test-$SHORT_SHA'
 # Need to sign with pgp first
 #  - '--verify'
   - '--wait'
@@ -106,6 +107,7 @@ steps:
   - '--cleanup'
   - '--parallel'
   - '--debug'
+  - '--namespace=atavism-test-$SHORT_SHA'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -144,6 +146,7 @@ steps:
   - '--atomic'
   - '--install'
   - '--debug'
+  - '--namespace=atavism'
 # Need to sign package with pgp first
 #  - '--verify'
   - '--wait'
@@ -207,6 +210,7 @@ steps:
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
   - '--install'
+  - '--namespace=atavism'
 # Need to sign with pgp
 #  - '--verify'
   - '--wait'
