@@ -1,0 +1,64 @@
+steps:
+- id: 'ContainerBuild'
+  dir: 'containers/atavism'
+  name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '-t'
+  - 'gcr.io/$PROJECT_ID/atavism:$SHORT_SHA'
+  - '.'
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: ContainerPush
+  dir: 'containers/atavism'
+  args:
+  - 'push'
+  - 'gcr.io/$PROJECT_ID/atavism:$SHORT_SHA'
+  waitFor:
+  - 'ContainerBuild'
+
+- id: 'HelmLint'
+  name: 'gcr.io/$PROJECT_ID/helm'
+  args:
+  - lint
+  dir: 'charts/atavism'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'HELM_REPO_NAME=incubator'
+  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
+  - 'TILLERLESS=false'
+  - 'TILLER_NAMESPACE=kube-system'
+
+- id: 'HelmDeps'
+  name: 'gcr.io/$PROJECT_ID/helm'
+  args:
+  - dependency
+  - update
+  dir: 'charts/atavism'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'HELM_REPO_NAME=incubator'
+  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
+  - 'TILLERLESS=false'
+  - 'TILLER_NAMESPACE=kube-system'
+  waitFor:
+  - 'HelmLint'
+
+- id: 'HelmPackage'
+  name: 'gcr.io/$PROJECT_ID/helm'
+  args:
+  - package
+  - '.'
+  dir: 'charts/atavism'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'HELM_REPO_NAME=incubator'
+  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
+  - 'TILLERLESS=false'
+  - 'TILLER_NAMESPACE=kube-system'
+  waitFor:
+  - 'HelmLint'
+  - 'HelmDeps'

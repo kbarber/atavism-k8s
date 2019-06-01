@@ -1,0 +1,13 @@
+{{- template "common.service" (list . "workstation.node.service") -}}
+{{- define "workstation.node.service" -}}
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: {{ include "workstation.fqdn" . }}
+    external-dns.alpha.kubernetes.io/ttl: "10"
+spec:
+  ports:
+    - port: 22
+      targetPort: 22
+      protocol: TCP
+      name: ssh
+{{- end -}}

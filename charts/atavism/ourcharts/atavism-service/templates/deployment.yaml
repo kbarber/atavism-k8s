@@ -1,0 +1,42 @@
+
+{{- template "common.deployment" (list . "workstation.deployment") -}}
+{{- define "workstation.deployment" -}}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      hostname: {{ .Values.type }}
+      subdomain: {{ .Release.Name }}
+      containers:
+      - {{ template "common.container" (list . "workstation.deployment.container") }}
+      volumes:
+      {{- with .Values.extraVolumes }}
+      {{ toYaml . | nindent 6 }}
+      {{- end }}
+      nodeSelector:
+        {{ toYaml .Values.nodeSelector | indent 8 }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end -}}
+
+{{- define "workstation.deployment.container" -}}
+ports:
+- name: ssh
+  containerPort: 22
+#readinessProbe:
+#  tcpSocket:
+#    port: 22
+#  initialDelaySeconds: 15
+#  periodSeconds: 10
+#livenessProbe:
+#  tcpSocket:
+#    port: 22
+#  initialDelaySeconds: 15
+#  periodSeconds: 20
+args: [{{ .Values.type }}]
+volumeMounts:
+{{- with .Values.extraVolumeMounts }}
+{{ toYaml . }}
+{{- end }}
+{{- end -}}

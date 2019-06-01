@@ -1,0 +1,96 @@
+# Default values for atavism
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+auth:
+  type: auth
+domain:
+  type: domain
+login:
+  type: login
+combat:
+  type: combat
+instance:
+  type: instance
+objmgr:
+  type: objmgr
+wmgr:
+  type: wmgr
+proxy:
+  type: proxy
+mob:
+  type: mob
+arena:
+  type: arena
+builder:
+  type: builder
+auction:
+  type: auction
+
+atavismdb:
+  nameOverride: atavismdb
+  mysqlUser: atavism
+  mysqlPassword: atavism
+  mysqlDatabase: atavism
+
+  persistence:
+    size: 8Gi
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limit:
+      memory: 256Mi
+      cpu: 100ms
+
+masterdb:
+  nameOverride: masterdb
+  mysqlUser: atavism
+  mysqlPassword: atavism
+  mysqlDatabase: master
+
+  persistence:
+    size: 8Gi
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limit:
+      memory: 250Mi
+      cpu: 100ms
+
+contentdb:
+  nameOverride: contentdb
+  mysqlUser: atavism
+  mysqlPassword: atavism
+  mysqlDatabase: content
+
+  persistence:
+    size: 8Gi
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limit:
+      memory: 256Mi
+      cpu: 100ms
+
+admindb:
+  nameOverride: admindb
+  mysqlUser: atavism
+  mysqlPassword: atavism
+  mysqlDatabase: atavism
+
+  persistence:
+    size: 8Gi
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limit:
+      memory: 256Mi
+      cpu: 100ms

@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: 2019.2.1
+description: A helm chart for atavism
+engine: gotpl
+home: http://www.bob.sh/
+icon: http://www.bob.sh/favicon.ico
+keywords:
+- atavism
+maintainers:
+- name: Bobsh
+  url: https://github.com/orgs/bobsh/projects/1?fullscreen=true
+name: atavism
+sources:
+- https://github.com/bobsh/atavism-chart
+tillerVersion: '>=2.13.1'
+version: 2.0.2

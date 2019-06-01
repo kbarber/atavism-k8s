@@ -1,0 +1,30 @@
+# Type of atavism app server
+type: "auth"
+
+replicaCount: 1
+
+image:
+  repository: gcr.io/atavism/atavism
+  tag: b1e6b49
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
