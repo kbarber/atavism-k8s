@@ -84,6 +84,7 @@ steps:
   - '--description=CanaryRelease'
   - '--replace'
   - '--debug'
+  - '--timeout=1200'
   - '--namespace=atavism-test-$SHORT_SHA'
 # Need to sign with pgp first
 #  - '--verify'
@@ -96,6 +97,7 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
+  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmPackage'
 
@@ -107,6 +109,7 @@ steps:
   - '--cleanup'
   - '--parallel'
   - '--debug'
+  - '--timeout=1200'
   - '--namespace=atavism-test-$SHORT_SHA'
   dir: 'charts/atavism'
   env:
@@ -116,6 +119,7 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
+  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmCanaryRelease'
 
@@ -147,6 +151,7 @@ steps:
   - '--install'
   - '--debug'
   - '--namespace=atavism'
+  - '--timeout=1200'
 # Need to sign package with pgp first
 #  - '--verify'
   - '--wait'
@@ -158,6 +163,7 @@ steps:
   - 'HELM_REPO_URL=gs://bobsh/charts'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
+  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmPackage'
 
@@ -169,6 +175,7 @@ steps:
   - '--cleanup'
   - '--parallel'
   - '--debug'
+  - '--timeout=1200'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -177,6 +184,7 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
+  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmCanaryUpgrade'
 
@@ -197,6 +205,7 @@ steps:
   - 'HELM_REPO_URL=gs://bobsh/charts'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
+  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmCanaryTest'
   - 'HelmCanaryUpgradeTest'
@@ -214,6 +223,7 @@ steps:
 # Need to sign with pgp
 #  - '--verify'
   - '--wait'
+  - '--timeout=1200'
   - '--debug'
   dir: 'charts/atavism'
   env:
@@ -223,6 +233,7 @@ steps:
   - 'HELM_REPO_URL=gs://bobsh/charts'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
+  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmCanaryTest'
   - 'HelmCanaryUpgradeTest'
@@ -235,6 +246,7 @@ steps:
   - '--cleanup'
   - '--parallel'
   - '--debug'
+  - '--timeout=1200'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -243,5 +255,6 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
+  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmProdUpgrade'
