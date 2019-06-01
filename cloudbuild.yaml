@@ -76,6 +76,7 @@ steps:
   - '--name=atavism-test-$SHORT_SHA'
   - '--description=CanaryRelease'
   - '--replace'
+# Need to sign with pgp first
 #  - '--verify'
   - '--wait'
   dir: 'charts/atavism'
@@ -132,6 +133,7 @@ steps:
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
   - '--install'
+# Need to sign package with pgp first
 #  - '--verify'
   - '--wait'
   dir: 'charts/atavism'
@@ -192,6 +194,7 @@ steps:
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
   - '--install'
+# Need to sign with pgp
 #  - '--verify'
   - '--wait'
   dir: 'charts/atavism'
