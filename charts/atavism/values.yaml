@@ -41,7 +41,7 @@ atavismdb:
     requests:
       memory: 256Mi
       cpu: 100m
-    limit:
+    limits:
       memory: 256Mi
       cpu: 100ms
 
@@ -59,7 +59,7 @@ masterdb:
     requests:
       memory: 256Mi
       cpu: 100m
-    limit:
+    limits:
       memory: 250Mi
       cpu: 100ms
 
@@ -77,7 +77,7 @@ contentdb:
     requests:
       memory: 256Mi
       cpu: 100m
-    limit:
+    limits:
       memory: 256Mi
       cpu: 100ms
 
@@ -95,6 +95,6 @@ admindb:
     requests:
       memory: 256Mi
       cpu: 100m
-    limit:
+    limits:
       memory: 256Mi
       cpu: 100ms
