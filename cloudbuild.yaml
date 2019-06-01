@@ -37,8 +37,8 @@ steps:
 #  - '--strict'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
@@ -54,8 +54,8 @@ steps:
   - '--debug'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
@@ -77,8 +77,8 @@ steps:
   - '.'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
@@ -104,8 +104,8 @@ steps:
   - '--wait'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
@@ -122,8 +122,8 @@ steps:
   - '--timeout=1200'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
@@ -138,8 +138,8 @@ steps:
   - 'atavism-test-$SHORT_SHA'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
@@ -149,12 +149,12 @@ steps:
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - upgrade
-  - atavism
+  - atavism-acceptance
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
   - '--install'
   - '--debug'
-  - '--namespace=atavism'
+  - '--namespace=atavism-acceptance'
   - '--timeout=1200'
   - '--home=/.helm'
 # Need to sign package with pgp first
@@ -163,7 +163,7 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-acceptance'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
@@ -173,7 +173,7 @@ steps:
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - test
-  - 'atavism'
+  - 'atavism-acceptance'
   - '--cleanup'
   - '--parallel'
   - '--debug'
@@ -182,7 +182,7 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-acceptance'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
@@ -199,8 +199,8 @@ steps:
   - '--debug'
   dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'HELM_REPO_NAME=bobsh'
   - 'HELM_REPO_URL=gs://bobsh/charts'
   - 'TILLERLESS=false'
@@ -229,7 +229,7 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-prod'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
@@ -249,7 +249,7 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-prod'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
