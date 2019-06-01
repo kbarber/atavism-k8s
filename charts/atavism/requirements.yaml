@@ -19,50 +19,50 @@ dependencies:
   repository: "https://kubernetes-charts.storage.googleapis.com"
   alias: contentdb
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: auth
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: domain
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: login
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: combat
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: instance
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: objmgr
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: wmgr
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: proxy
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: mob
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: arena
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: builder
 - name: atavism-service
-  version: "0.0.1"
+  version: "1.0.0"
   repository: "file://ourcharts/atavism-service"
   alias: auction
