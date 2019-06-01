@@ -1,4 +1,4 @@
-## atavism_server
+## atavism-server
 
 This is just a content container with the zip of the atavism server download
 content in it.
