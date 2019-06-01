@@ -51,8 +51,8 @@ steps:
   args:
   - package
   - '--debug'
-  - '--version'
   - '--dependency-update'
+  - '--version'
   - '1.0.0-$SHORT_SHA'
 # Need to set this up
 #  - '--keyring'
@@ -151,6 +151,7 @@ steps:
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmPackage'
+  - 'ContainerPush'
 
 - id: 'HelmCanaryUpgradeTest'
   name: 'gcr.io/$PROJECT_ID/helm'
