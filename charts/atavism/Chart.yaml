@@ -8,9 +8,9 @@ keywords:
 - atavism
 maintainers:
 - name: Bobsh
-  url: https://github.com/orgs/bobsh/projects/1?fullscreen=true
+  url: https://github.com/bob.sh
 name: atavism
 sources:
-- https://github.com/bobsh/atavism-chart
+- https://github.com/bobsh/atavism-k8s
 tillerVersion: '>=2.13.1'
 version: 2.0.2
