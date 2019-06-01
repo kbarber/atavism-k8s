@@ -205,8 +205,8 @@ steps:
   args:
   - gcs
   - push
-  - 'bobsh'
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
+  - 'gs://bobsh/charts'
   - '--retry'
   - '--debug'
   dir: 'charts/atavism'
