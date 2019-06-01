@@ -106,11 +106,8 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmPackage'
 
@@ -127,11 +124,8 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmCanaryRelease'
 
@@ -146,8 +140,6 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
@@ -171,11 +163,8 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-acceptance'
-  - 'HELM_REPO_NAME=bobsh'
-  - 'HELM_REPO_URL=gs://bobsh/charts'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmPackage'
 
@@ -192,11 +181,8 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-acceptance'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmCanaryUpgrade'
 
@@ -213,8 +199,6 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-iowa-test'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   - 'GCS_PLUGIN_VERSION=0.2.0'
@@ -241,11 +225,8 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-prod'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmCanaryTest'
   - 'HelmCanaryUpgradeTest'
@@ -263,10 +244,7 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-prod'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  - 'GCS_PLUGIN_VERSION=0.2.0'
   waitFor:
   - 'HelmProdUpgrade'
