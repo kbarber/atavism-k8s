@@ -156,6 +156,7 @@ steps:
   - '--debug'
   - '--namespace=atavism'
   - '--timeout=1200'
+  - '--home=/.helm'
 # Need to sign package with pgp first
 #  - '--verify'
   - '--wait'
@@ -177,6 +178,7 @@ steps:
   - '--parallel'
   - '--debug'
   - '--timeout=1200'
+  - '--home=/.helm'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -223,6 +225,7 @@ steps:
   - '--wait'
   - '--timeout=1200'
   - '--debug'
+  - '--home=/.helm'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -242,6 +245,7 @@ steps:
   - '--parallel'
   - '--debug'
   - '--timeout=1200'
+  - '--home=/.helm'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
