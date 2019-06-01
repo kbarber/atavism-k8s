@@ -67,7 +67,8 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  waitFor: ['-']
+  waitFor:
+  - FixContainerVersion
 
 - id: 'HelmCanaryRelease'
   name: 'gcr.io/$PROJECT_ID/helm'
@@ -92,6 +93,7 @@ steps:
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmPackage'
+  - 'ContainerPush'
 
 - id: 'HelmCanaryTest'
   name: 'gcr.io/$PROJECT_ID/helm'
