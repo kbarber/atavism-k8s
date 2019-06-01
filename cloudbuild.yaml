@@ -39,8 +39,6 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
   - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
