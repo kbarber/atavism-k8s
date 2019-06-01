@@ -1,5 +1,7 @@
 {{- template "common.deployment" (list . "workstation.deployment") -}}
 {{- define "workstation.deployment" -}}
+metadata:
+  name: {{ .Values.type }}
 spec:
   replicas: 1
   strategy:
