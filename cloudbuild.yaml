@@ -21,6 +21,7 @@ steps:
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - lint
+  - '--debug'
 # Unable to turn this on because of lint issues with mysql chart
 #  - '--strict'
   dir: 'charts/atavism'
@@ -38,6 +39,7 @@ steps:
   args:
   - dependency
   - update
+  - '--debug'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -52,8 +54,13 @@ steps:
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - package
+  - '--debug'
   - '--version'
   - '1.0.0-$SHORT_SHA'
+# Need to set this up
+#  - '--keyring'
+#  - '/foo.gpg'
+#  - '--sign'
   - '.'
   dir: 'charts/atavism'
   env:
@@ -76,6 +83,7 @@ steps:
   - '--name=atavism-test-$SHORT_SHA'
   - '--description=CanaryRelease'
   - '--replace'
+  - '--debug'
 # Need to sign with pgp first
 #  - '--verify'
   - '--wait'
@@ -97,6 +105,7 @@ steps:
   - 'atavism-test-$SHORT_SHA'
   - '--cleanup'
   - '--parallel'
+  - '--debug'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -112,6 +121,7 @@ steps:
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - delete
+  - '--debug'
   - '--purge'
   - 'atavism-test-$SHORT_SHA'
   dir: 'charts/atavism'
@@ -133,6 +143,7 @@ steps:
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--atomic'
   - '--install'
+  - '--debug'
 # Need to sign package with pgp first
 #  - '--verify'
   - '--wait'
@@ -154,6 +165,7 @@ steps:
   - 'atavism'
   - '--cleanup'
   - '--parallel'
+  - '--debug'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -173,6 +185,7 @@ steps:
   - 'bobsh'
   - 'atavism-1.0.0-$SHORT_SHA.tgz'
   - '--retry'
+  - '--debug'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -197,6 +210,7 @@ steps:
 # Need to sign with pgp
 #  - '--verify'
   - '--wait'
+  - '--debug'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
@@ -216,6 +230,7 @@ steps:
   - 'atavism'
   - '--cleanup'
   - '--parallel'
+  - '--debug'
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
