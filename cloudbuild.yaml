@@ -29,6 +29,7 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
+  waitFor: ['-']
 
 - id: 'HelmDeps'
   name: 'gcr.io/$PROJECT_ID/helm'
@@ -43,8 +44,7 @@ steps:
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
-  waitFor:
-  - 'HelmLint'
+  waitFor: ['-']
 
 - id: 'HelmPackage'
   name: 'gcr.io/$PROJECT_ID/helm'
