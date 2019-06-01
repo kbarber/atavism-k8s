@@ -24,10 +24,10 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=true'
+  - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor: ['-']
 
@@ -39,10 +39,10 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=true'
+  - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor: ['-']
 
@@ -56,10 +56,10 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=true'
+  - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmDeps'
@@ -81,15 +81,15 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=true'
+  - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmPackage'
 
-- id: 'HelmTest'
+- id: 'HelmCanaryTest'
   name: 'gcr.io/$PROJECT_ID/helm'
   args:
   - test
@@ -98,10 +98,10 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=true'
+  - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmCanaryRelease'
@@ -115,14 +115,51 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
   - 'HELM_REPO_NAME=incubator'
   - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=true'
+  - 'TILLERLESS=false'
+  - 'TILLER_NAMESPACE=kube-system'
+  waitFor:
+  - 'HelmCanaryTest'
+
+- id: 'HelmCanaryUpgrade'
+  name: 'gcr.io/$PROJECT_ID/helm'
+  args:
+  - upgrade
+  - atavism
+  - 'atavism-1.0.0-$SHORT_SHA.tgz'
+  - '--atomic'
+  - '--install'
+#  - '--verify'
+  - '--wait'
+  dir: 'charts/atavism'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
+  - 'HELM_REPO_NAME=bobsh'
+  - 'HELM_REPO_URL=gs://bobsh/charts'
+  - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmPackage'
 
+  - id: 'HelmCanaryUpgradeTest'
+  name: 'gcr.io/$PROJECT_ID/helm'
+  args:
+  - test
+  - 'atavism'
+  - '--cleanup'
+  dir: 'charts/atavism'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
+  - 'HELM_REPO_NAME=incubator'
+  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
+  - 'TILLERLESS=false'
+  - 'TILLER_NAMESPACE=kube-system'
+  waitFor:
+  - 'HelmCanaryUpgrade'
 
 - id: 'HelmGcsPush'
   name: 'gcr.io/$PROJECT_ID/helm'
@@ -135,13 +172,14 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-test'
   - 'HELM_REPO_NAME=bobsh'
   - 'HELM_REPO_URL=gs://bobsh/charts'
-  - 'TILLERLESS=true'
+  - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
-  - 'HelmTest'
+  - 'HelmCanaryTest'
+  - 'HelmCanaryUpgradeTest'
 
 
 - id: 'HelmProdUpgrade'
@@ -157,10 +195,11 @@ steps:
   dir: 'charts/atavism'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism-london-prod'
   - 'HELM_REPO_NAME=bobsh'
   - 'HELM_REPO_URL=gs://bobsh/charts'
   - 'TILLERLESS=false'
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
-  - 'HelmTest'
+  - 'HelmCanaryTest'
+  - 'HelmCanaryUpgradeTest'
