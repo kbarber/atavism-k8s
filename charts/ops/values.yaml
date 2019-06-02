@@ -3,6 +3,7 @@ external-dns:
   provider: google
   google:
     project: "atavism"
+    serviceAccountKey: "cloud-dns-key"
   domainFilters: []
   zoneIdFilters: []
   interval: "1m"
