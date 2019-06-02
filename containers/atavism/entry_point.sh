@@ -17,10 +17,4 @@ case "$1" in
         ;;
 esac
 
-while :
-do
-    $CMD status
-	sleep 20
-done
-
-$CMD stop
+tail -f /dev/null
