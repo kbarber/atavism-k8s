@@ -8,18 +8,18 @@ substitutions:
   _HELM_REPO_NAME: bobsh
   _HELM_REPO_URL: gs://bobsh/charts
   _HELM_CHART_NAME: atavism
-  _CONTAINER_NAME: "atavism"
-  _HELM_TEST_NAMESPACE: "atavism-test"
-  _HELM_ACCEPTANCE_NAMESPACE: "atavism-acceptance"
-  _HELM_PROD_NAMESPACE: "atavism"
+  _CONTAINER_NAME: atavism
+  _HELM_TEST_NAMESPACE: atavism-test
+  _HELM_ACCEPTANCE_NAMESPACE: atavism-acceptance
+  _HELM_PROD_NAMESPACE: atavism
   _HELM_TEST_TIMEOUT: '600'
   _HELM_INSTALL_TIMEOUT: '1800'
 
 options:
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'  
     - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-    - 'TILLERLESS=false'
+    - TILLERLESS=false
     - 'TILLER_NAMESPACE=kube-system'
     - 'GCS_PLUGIN_VERSION=0.2.0'
     - 'HELM_REPO_NAME=incubator'
@@ -73,7 +73,6 @@ steps:
   args:
   - lint
   - '--debug'
-  #- '--strict'
   waitFor:
     - 'FixContainerVersion'
   dir: 'charts/${_HELM_CHART_NAME}'
@@ -86,7 +85,7 @@ steps:
     - '--debug'
     - '--dependency-update'
     - '--version'
-    - &helmChartVersion '1.0.0-${SHORT_SHA}'
+    - '1.0.0-${SHORT_SHA}'
     - '.'
   waitFor:
   - FixContainerVersion
@@ -123,6 +122,7 @@ steps:
   - install
   - *helmPackage
   - '--atomic'
+  - '--render-subchart-notes'
   - '--name'
   - &helmTestNamespaceGen $_HELM_TEST_NAMESPACE-$SHORT_SHA
   - '--replace'
@@ -133,8 +133,7 @@ steps:
   - '--set'
   - 'license.key=${_LICENSE_KEY}'
   - '--namespace'
-  - *helmTestNamespaceGen
-  #- '--verify'
+  - $_HELM_TEST_NAMESPACE
   - '--wait'
   waitFor:
   - 'HelmPackage'
@@ -175,12 +174,14 @@ steps:
   - upgrade
   - ${_HELM_ACCEPTANCE_NAMESPACE}
   - *helmPackage
+  - '--render-subchart-notes'
   - '--atomic'
   - '--install'
   - '--debug'
+  - '--reset-values'
+  - '--cleanup-on-fail'
   - '--namespace=${_HELM_ACCEPTANCE_NAMESPACE}'
   - '--timeout=${_HELM_INSTALL_TIMEOUT}'
-  #- '--verify'
   - '--wait'
   waitFor:
   - 'HelmTestReleaseTest'
@@ -209,10 +210,12 @@ steps:
   - upgrade
   - ${_HELM_PROD_NAMESPACE}
   - *helmPackage
+  - '--render-subchart-notes'
   - '--atomic'
   - '--install'
+  - '--reset-values'
+  - '--cleanup-on-fail'
   - '--namespace=${_HELM_PROD_NAMESPACE}'
-  #- '--verify'
   - '--wait'
   - '--timeout=${_HELM_INSTALL_TIMEOUT}'
   - '--debug'
