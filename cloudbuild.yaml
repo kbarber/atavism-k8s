@@ -1,246 +1,249 @@
-steps:
-- id: 'ContainerBuild'
-  dir: 'containers/atavism'
+#############
+# VARIABLES #
+#############
+substitutions:
+  _LICENSE_EMAIL: your@email.com
+  _LICENSE_KEY: license-key
+  _CLOUDSDK_COMPUTE_ZONE: europe-west2-b
+  _CLOUDSDK_CONTAINER_CLUSTER: atavism
+  _TILLERLESS: false
+  _TILLER_NAMESPACE: kube-system
+  _GCS_PLUGIN_VERSION: 0.2.0
+  _HELM_REPO_NAME: bobsh
+  _HELM_REPO_URL: gs://bobsh/charts
+  _HELM_CHART_NAME: atavism
+  _HELM_CHART_VERSION: "1.0.0-${SHORT_SHA}"
+  _HELM_PACKAGE: "${_HELM_CHART_NAME}-${_HELM_VERSION}.tgz"
+  _CONTAINER_NAME: "atavism"
+  _CONTAINER_VERSION: "${SHORT_SHA}-git"
+  _CONTAINER_URL: "gcr.io/${PROJECT_ID}/${_CONTAINER_NAME}:${_CONTAINER_VERSION}"
+  _HELM_CONTAINER_URL: "gcr.io/$PROJECT_ID/helm"
+  _HELM_TEST_NAMESPACE: "atavism-test-${SHORT_SHA}"
+  _HELM_ACCEPTANCE_NAMESPACE: "atavism-acceptance"
+  _HELM_PROD_NAMESPACE: "atavism"
+  _HELM_TEST_TIMEOUT: 600
+  _HELM_INSTALL_TIMEOUT: 1800
+
+#### BUILD STEPS ####
+
+helmEnv: &helmEnv
+  - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
+  - 'TILLERLESS=${_TILLERLESS}'
+  - 'TILLER_NAMESPACE=${_TILLER_NAMESPACE}'
+  - 'GCS_PLUGIN_VERSION=${_GCS_PLUGIN_VERSION}'
+
+helmRepoIncubator: &helmRepoIncubator
+  - 'HELM_REPO_NAME=incubator'
+  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
+
+helmRepoOurs: &helmRepoOurs
+  - 'HELM_REPO_NAME=${_HELM_REPO_NAME}'
+  - 'HELM_REPO_URL=${_HELM_REPO_URL}'
+
+helmStep: &helmStep
+  dir: 'charts/${_HELM_CHART_NAME}'
+  name: ${_HELM_CONTAINER_URL}
+  env:
+    <<: *helmEnv
+  waitFor: ['-']
+
+dockerStep: &dockerStep
+  dir: 'containers/${_CONTAINER_NAME}'
   name: 'gcr.io/cloud-builders/docker'
+  waitFor: ['-']
+
+ubuntuStep: &ubuntuStep
+  name: 'ubuntu:18.04'
+  waitFor: ['-']
+
+steps:
+
+#############
+# CONTAINER #
+#############
+
+- <<: *dockerStep
+  id: 'ContainerBuild'
   args:
   - 'build'
   - '-t'
-  - 'gcr.io/$PROJECT_ID/atavism:$SHORT_SHA-git'
+  - ${_CONTAINER_URL}
   - '.'
 
-- id: ContainerPush
-  name: 'gcr.io/cloud-builders/docker'
-  dir: 'containers/atavism'
+- <<: *dockerStep
+  id: ContainerPush
   args:
   - 'push'
-  - 'gcr.io/$PROJECT_ID/atavism:$SHORT_SHA-git'
+  - ${_CONTAINER_URL}
   waitFor:
   - 'ContainerBuild'
 
-- id: 'FixContainerVersion'
-  name: 'ubuntu:18.04'
-  dir: 'charts/atavism/ourcharts/atavism-service'
+
+################################
+# CHART PACKAGING AND SHIPPING #
+################################
+
+- <<: *ubuntuStep
+  id: 'FixContainerVersion'
+  dir: 'charts/${_HELM_CHART_NAME}/ourcharts/atavism-service'
   entrypoint: 'sed'
   args:
     - '-i'
     - '-e'
-    - 's/latest/$SHORT_SHA-git/g'
+    - 's/latest/${_CONTAINER_VERSION}/g'
     - 'values.yaml'
-  waitFor: ['-']
 
-- id: 'HelmLint'
-  name: 'gcr.io/$PROJECT_ID/helm'
+- <<: *helmStep
+  id: 'HelmLint'
   args:
   - lint
   - '--debug'
-# Unable to turn this on because of lint issues with mysql chart
-#  - '--strict'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
+  #- '--strict'
   waitFor:
     - 'FixContainerVersion'
 
-
-- id: 'HelmPackage'
-  name: 'gcr.io/$PROJECT_ID/helm'
+- <<: *helmStep
+  id: 'HelmPackage'
   args:
   - package
   - '--debug'
   - '--dependency-update'
-  - '--version'
-  - '1.0.0-$SHORT_SHA'
-# Need to set this up
-#  - '--keyring'
-#  - '/foo.gpg'
-#  - '--sign'
+  - '--version=${_HELM_CHART_VERSION}'
+  #- '--keyring=/foo.gpg'
+  #- '--sign'
   - '.'
-  dir: 'charts/atavism'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
+    <<: [*helmEnv, *helmRepoIncubator]
   waitFor:
   - FixContainerVersion
 
-- id: 'HelmCanaryRelease'
-  name: 'gcr.io/$PROJECT_ID/helm'
+- <<: *helmStep
+  id: 'HelmGcsPush'
+  args:
+  - gcs
+  - push
+  - ${_HELM_PACKAGE}
+  - ${_HELM_REPO_NAME}
+  - '--retry'
+  - '--debug'
+  env:
+    <<: [*helmEnv, *helmRepoOurs]
+  waitFor:
+  - 'HelmPackage'
+  - 'HelmLint'
+
+#######################
+# CHART RELEASE TESTS #
+#######################
+
+- <<: *helmStep
+  id: 'HelmTestRelease'
   args:
   - install
-  - 'atavism-1.0.0-$SHORT_SHA.tgz'
+  - ${_HELM_PACKAGE}
   - '--atomic'
-  - '--name=atavism-test-$SHORT_SHA'
-  - '--description=CanaryRelease'
+  - '--name=${_HELM_TEST_NAMESPACE}'
   - '--replace'
   - '--debug'
-  - '--timeout=1200'
+  - '--timeout=${_HELM_INSTALL_TIMEOUT}'
   - '--set'
   - 'license.email=${_LICENSE_EMAIL}'
   - '--set'
   - 'license.key=${_LICENSE_KEY}'
-  - '--namespace=atavism-test-$SHORT_SHA'
-# Need to sign with pgp first
-#  - '--verify'
+  - '--namespace=${_HELM_TEST_NAMESPACE}'
+  #- '--verify'
   - '--wait'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmPackage'
+  - 'HelmLint'
   - 'ContainerPush'
 
-- id: 'HelmCanaryTest'
-  name: 'gcr.io/$PROJECT_ID/helm'
+- <<: *helmStep
+  id: 'HelmTestReleaseTest'
   args:
   - test
-  - 'atavism-test-$SHORT_SHA'
+  - ${_HELM_TEST_NAMESPACE}
   - '--cleanup'
   - '--parallel'
   - '--debug'
-  - '--timeout=1200'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
+  - '--timeout=${_HELM_TEST_TIMEOUT'
   waitFor:
-  - 'HelmCanaryRelease'
+  - 'HelmTestRelease'
 
-- id: 'HelmCanaryDelete'
-  name: 'gcr.io/$PROJECT_ID/helm'
+- <<: *helmStep
+  id: 'HelmTestReleaseDelete'
   args:
   - delete
   - '--debug'
   - '--purge'
-  - 'atavism-test-$SHORT_SHA'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
+  - ${_HELM_TEST_NAMESPACE}
   waitFor:
-  - 'HelmCanaryTest'
+  - 'HelmTestReleaseTest'
 
-- id: 'HelmCanaryUpgrade'
-  name: 'gcr.io/$PROJECT_ID/helm'
+#######################
+# ACCEPTANCE ROLLOUT  #
+#######################
+
+
+- <<: *helmStep
+  id: 'HelmAcceptanceUpgrade'
   args:
   - upgrade
-  - atavism-acceptance
-  - 'atavism-1.0.0-$SHORT_SHA.tgz'
+  - ${_HELM_ACCEPTANCE_NAMESPACE}
+  - ${_HELM_PACKAGE}
   - '--atomic'
   - '--install'
   - '--debug'
-  - '--namespace=atavism-acceptance'
-  - '--timeout=1200'
-# Need to sign package with pgp first
-#  - '--verify'
+  - '--namespace=${_HELM_ACCEPTANCE_NAMESPACE}'
+  - '--timeout=${_HELM_INSTALL_TIMEOUT}'
+  #- '--verify'
   - '--wait'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
   waitFor:
-  - 'HelmPackage'
-  - 'ContainerPush'
-  - 'HelmCanaryTest'
+  - 'HelmTestReleaseTest'
 
-- id: 'HelmCanaryUpgradeTest'
-  name: 'gcr.io/$PROJECT_ID/helm'
+- <<: *helmStep
+  id: 'HelmAcceptanceUpgradeTest'
   args:
   - test
-  - 'atavism-acceptance'
+  - ${_HELM_ACCEPTANCE_NAMESPACE}
   - '--cleanup'
   - '--parallel'
   - '--debug'
-  - '--timeout=1200'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
+  - '--timeout=${_HELM_TEST_TIMEOUT}'
   waitFor:
-  - 'HelmCanaryUpgrade'
-
-- id: 'HelmGcsPush'
-  name: 'gcr.io/$PROJECT_ID/helm'
-  args:
-  - gcs
-  - push
-  - 'atavism-1.0.0-$SHORT_SHA.tgz'
-  - 'bobsh'
-  - '--retry'
-  - '--debug'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'HELM_REPO_NAME=bobsh'
-  - 'HELM_REPO_URL=gs://bobsh/charts'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
-  - 'GCS_PLUGIN_VERSION=0.2.0'
-  waitFor:
-  - 'HelmCanaryTest'
-  - 'HelmCanaryUpgradeTest'
+  - 'HelmAcceptanceUpgrade'
 
 
-- id: 'HelmProdUpgrade'
-  name: 'gcr.io/$PROJECT_ID/helm'
+#######################
+# PRODUCTION ROLLOUT  #
+#######################
+
+
+- <<: &helmStep
+  id: 'HelmProdUpgrade'
   args:
   - upgrade
-  - atavism
-  - 'atavism-1.0.0-$SHORT_SHA.tgz'
+  - ${_HELM_PROD_NAMESPACE}
+  - ${_HELM_PACKAGE}
   - '--atomic'
   - '--install'
-  - '--namespace=atavism'
-# Need to sign with pgp
-#  - '--verify'
+  - '--namespace=${_HELM_PROD_NAMESPACE}'
+  #- '--verify'
   - '--wait'
-  - '--timeout=1200'
+  - '--timeout=${_HELM_INSTALL_TIMEOUT}'
   - '--debug'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
   waitFor:
-  - 'HelmCanaryTest'
-  - 'HelmCanaryUpgradeTest'
+  - 'HelmAcceptanceUpgradeTest'
 
-- id: 'HelmProdUpgradeTest'
-  name: 'gcr.io/$PROJECT_ID/helm'
+- <<: &helmStep
+  id: 'HelmProdUpgradeTest'
   args:
   - test
-  - 'atavism'
+  - ${_HELM_PROD_NAMESPACE}
   - '--cleanup'
   - '--parallel'
   - '--debug'
-  - '--timeout=1200'
-  dir: 'charts/atavism'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
-  - 'TILLERLESS=false'
-  - 'TILLER_NAMESPACE=kube-system'
+  - '--timeout=${_HELM_TEST_TIMEOUT}'
   waitFor:
   - 'HelmProdUpgrade'
-
-
-substitutions:
-  _LICENSE_EMAIL: your@email.com
-  _LICENSE_KEY: license-key
