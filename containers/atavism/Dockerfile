@@ -6,7 +6,7 @@ RUN set -xe && \
   apt-get update && \
   apt-get install -y curl git htop man unzip vim wget dnsutils \
     inetutils-ping telnet netcat-traditional lsof openjdk-8-jre-headless \
-    strace && \
+    strace netstat mysql-client nmap && \
   rm -rf /var/lib/apt/lists/*
 
 COPY --from=gcr.io/atavism/atavism_server:v2019.1.2 /opt/atavism_server /opt/atavism_server
