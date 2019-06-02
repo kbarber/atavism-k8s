@@ -1,7 +1,6 @@
 # Default values for atavism
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
 license:
   email: your@email.org
   key: license-key
