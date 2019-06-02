@@ -15,7 +15,7 @@ spec:
       volumes:
       - name: properties-volume
         configMap:
-          name: atavism-properties
+          name: {{ .Release.Name }}-properties
       {{- with .Values.extraVolumes }}
       {{ toYaml . | nindent 6 }}
       {{- end }}

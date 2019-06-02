@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: atavism-properties
+  name: {{ .Release.Name }}-properties
 
 data:
   auth.properties: |
