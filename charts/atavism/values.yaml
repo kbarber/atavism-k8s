@@ -122,6 +122,9 @@ proxy:
       memory: 262M
       cpu: 109m
 
+  service:
+    type: LoadBalancer
+
 objmgr:
   type: objmgr
   ports:
@@ -147,7 +150,6 @@ combat:
   type: combat
 instance:
   type: instance
-
 mob:
   type: mob
 arena:
@@ -194,6 +196,9 @@ atavismdb:
       memory: 272M
       cpu: 25m
 
+  service:
+    type: LoadBalancer
+
 masterdb:
   nameOverride: masterdb
   fullnameOverride: masterdb
@@ -231,12 +236,15 @@ masterdb:
       memory: 272M
       cpu: 25m
 
+  service:
+    type: LoadBalancer
+
 contentdb:
   nameOverride: contentdb
   fullnameOverride: contentdb
   mysqlUser: atavism
   mysqlPassword: atavism
-  mysqlDatabase: content
+  mysqlDatabase: world_content
 
   extraInitContainers: |
     - name: 'copy-init-sql-content'
@@ -267,6 +275,9 @@ contentdb:
     limits:
       memory: 272M
       cpu: 25m
+
+  service:
+    type: LoadBalancer
 
 admindb:
   nameOverride: admindb
@@ -304,3 +315,6 @@ admindb:
     limits:
       memory: 272M
       cpu: 25m
+
+  service:
+    type: LoadBalancer
