@@ -62,6 +62,6 @@ spec:
   targetRef:
     apiVersion: "extensions/v1beta1"
     kind:       Deployment
-    name:       {{ .Vales.type }}
+    name:       {{ .Values.type }}
   updatePolicy:
     updateMode: "Off"
