@@ -239,11 +239,11 @@ contentdb:
 
   resources:
     requests:
-      memory: 256M
-      cpu: 100m
+      memory: 272M
+      cpu: 25m
     limits:
-      memory: 256M
-      cpu: 100m
+      memory: 272M
+      cpu: 25m
 
 admindb:
   nameOverride: admindb
