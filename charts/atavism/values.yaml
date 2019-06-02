@@ -26,8 +26,8 @@ auth:
         protocol: TCP
       - name: socketpolicy
         port: 5090
-        targetPort: 9005
-        protocol: 5090
+        targetPort: 5090
+        protocol: TCP
       - name: masterrdp
         port: 9010
         targetPort: 9010
