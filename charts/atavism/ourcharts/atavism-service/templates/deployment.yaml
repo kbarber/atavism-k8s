@@ -45,6 +45,8 @@ env:
   value: {{ .Values.atavism.config }}/auth.properties
 - name: AO_PROPERTY_FILE
   value: {{ .Values.atavism.config }}/world.properties
+- name: JVM_FLAG
+  value: '-server -XX:+UseG1GC  -XX:+UseStringDeduplication '
 volumeMounts:
 - name: properties-volume
   mountPath: {{ .Values.atavism.config }}
