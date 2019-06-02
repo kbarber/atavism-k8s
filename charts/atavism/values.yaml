@@ -40,6 +40,13 @@ auth:
         port: 5090
         targetPort: 5090
         protocol: TCP
+  resources:
+    requests:
+      memory: 262M
+      cpu: 35m
+    limits:
+      memory: 262M
+      cpu: 35m
 
 domain:
   type: domain
@@ -107,6 +114,14 @@ proxy:
         targetPort: 5067
         protocol: TCP
 
+  resources:
+    requests:
+      memory: 262M
+      cpu: 109m
+    limits:
+      memory: 262M
+      cpu: 109m
+
 objmgr:
   type: objmgr
   ports:
@@ -119,6 +134,14 @@ objmgr:
         targetPort: 45093
         protocol: TCP
         name: wmgr
+
+  resources:
+    requests:
+      memory: 262M
+      cpu: 126m
+    limits:
+      memory: 262M
+      cpu: 126m
 
 combat:
   type: combat
