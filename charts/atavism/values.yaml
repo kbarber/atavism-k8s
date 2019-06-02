@@ -12,26 +12,21 @@ auth:
     pod:
       - name: mastertcp
         containerPort: 9005
-        protocol: TCP
       - name: mastertcp2
         containerPort: 9010
-        protocol: TCP
       - name: masterrdp
         containerPort: 9010
         protocol: UDP
       - name: socketpolicy
         containerPort: 5090
-        protocol: TCP
 
     service:
       - name: mastertcp
         port: 9005
         targetPort: 9005
-        protocol: TCP
       - name: mastertcp2
         port: 9010
         targetPort: 9010
-        protocol: TCP
       - name: masterrdp
         port: 9010
         targetPort: 9010
@@ -39,7 +34,6 @@ auth:
       - name: socketpolicy
         port: 5090
         targetPort: 5090
-        protocol: TCP
   resources:
     requests:
       memory: 262M
@@ -54,12 +48,10 @@ domain:
     pod:
       - name: msgsvr
         containerPort: 20377
-        protocol: TCP
     service:
       - name: msgsvr
         port: 20377
         targetPort: 20377
-        protocol: TCP
 
 login:
   type: login
@@ -67,11 +59,9 @@ login:
     pod:
       - name: login
         containerPort: 5042
-        protocol: TCP
     service:
       - port: 5042
         targetPort: 5042
-        protocol: TCP
         name: login
 
 wmgr:
@@ -80,11 +70,9 @@ wmgr:
     pod:
       - name: wmgr
         containerPort: 5042
-        protocol: TCP
     service:
       - port: 5042
         targetPort: 5042
-        protocol: TCP
         name: wmgr
 
 proxy:
@@ -93,26 +81,20 @@ proxy:
     pod:
       - name: proxy
         containerPort: 5052
-        protocol: TCP
       - name: flashpolicy
         containerPort: 5041
-        protocol: TCP
       - name: voice
         containerPort: 5067
-        protocol: TCP
     service:
       - name: proxy
         port: 5052
         targetPort: 5052
-        protocol: TCP
       - name: flashpolicy
         port: 5041
         targetPort: 5041
-        protocol: TCP
       - name: voice
         port: 5067
         targetPort: 5067
-        protocol: TCP
 
   resources:
     requests:
@@ -131,11 +113,9 @@ objmgr:
     pod:
       - name: objmgr
         containerPort: 45093
-        protocol: TCP
     service:
       - port: 45093
         targetPort: 45093
-        protocol: TCP
         name: wmgr
 
   resources:
@@ -159,7 +139,7 @@ builder:
 auction:
   type: auction
 
-atavismdb:
+atavismdb: &db
   nameOverride: atavismdb
   fullnameOverride: atavismdb
   mysqlUser: atavism
@@ -205,13 +185,18 @@ atavismdb:
       enabled: false
 
   livenessProbe:
+    initialDelaySeconds: 300
+    periodSeconds: 30
+    timeoutSeconds: 30
+  readinessProbe:
     initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
 
 masterdb:
+  <<: *db
   nameOverride: masterdb
   fullnameOverride: masterdb
-  mysqlUser: atavism
-  mysqlPassword: atavism
   mysqlDatabase: master
 
   extraInitContainers: |
@@ -225,42 +210,11 @@ masterdb:
         - name: migrations
           mountPath: /docker-entrypoint-initdb.d
 
-  extraVolumes: |
-    - name: migrations
-      emptyDir: {}
-
-  extraVolumeMounts: |
-    - name: migrations
-      mountPath: /docker-entrypoint-initdb.d
-
-  persistence:
-    size: 8Gi
-
-  resources:
-    requests:
-      memory: 272M
-      cpu: 25m
-    limits:
-      memory: 272M
-      cpu: 25m
-
-  service:
-    type: LoadBalancer
-
-  livenessProbe:
-    initialDelaySeconds: 120
-
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: false
-
 
 contentdb:
+  <<: *db
   nameOverride: contentdb
   fullnameOverride: contentdb
-  mysqlUser: atavism
-  mysqlPassword: atavism
   mysqlDatabase: world_content
 
   extraInitContainers: |
@@ -274,41 +228,10 @@ contentdb:
         - name: migrations
           mountPath: /docker-entrypoint-initdb.d
 
-  extraVolumes: |
-    - name: migrations
-      emptyDir: {}
-
-  extraVolumeMounts: |
-    - name: migrations
-      mountPath: /docker-entrypoint-initdb.d
-
-  persistence:
-    size: 8Gi
-
-  resources:
-    requests:
-      memory: 272M
-      cpu: 25m
-    limits:
-      memory: 272M
-      cpu: 25m
-
-  service:
-    type: LoadBalancer
-
-  livenessProbe:
-    initialDelaySeconds: 120
-
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: false
-
 admindb:
+  <<: *db
   nameOverride: admindb
   fullnameOverride: admindb
-  mysqlUser: atavism
-  mysqlPassword: atavism
   mysqlDatabase: admin
 
   extraInitContainers: |
@@ -321,33 +244,3 @@ admindb:
       volumeMounts:
         - name: migrations
           mountPath: /docker-entrypoint-initdb.d
-
-  extraVolumes: |
-    - name: migrations
-      emptyDir: {}
-
-  extraVolumeMounts: |
-    - name: migrations
-      mountPath: /docker-entrypoint-initdb.d
-
-  persistence:
-    size: 8Gi
-
-  resources:
-    requests:
-      memory: 272M
-      cpu: 25m
-    limits:
-      memory: 272M
-      cpu: 25m
-
-  service:
-    type: LoadBalancer
-
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: false
-
-  livenessProbe:
-    initialDelaySeconds: 120
