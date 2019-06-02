@@ -1,6 +1,9 @@
 # Type of atavism app server
 type: "auth"
 
+atavism:
+  config: /etc/atavism
+
 replicaCount: 1
 
 image:

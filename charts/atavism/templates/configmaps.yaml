@@ -82,7 +82,7 @@ data:
     atavism.admin.db_name=admin
     atavism.admin.db_user=atavism
     atavism.admin.db_password=atavism
-    atavism.admin.db_hostname=atavismdb
+    atavism.admin.db_hostname=adminmdb
     atavism.content.db_differentsettings=true
     atavism.content.db_driver=com.mysql.jdbc.Driver
     atavism.content.db_name=content

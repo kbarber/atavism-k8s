@@ -40,9 +40,14 @@ ports:
 #  initialDelaySeconds: 15
 #  periodSeconds: 20
 args: [{{ .Values.type }}]
+env:
+- name: DEFAULT_AUTH_PROPERTYFILE
+  value: {{ .Values.atavism.config }}/auth.properties
+- name: DEFAULT_AO_PROPERTYFILE
+  value: {{ .Values.atavism.config }}/world.properties
 volumeMounts:
 - name: properties-volume
-  mountPath: /etc/atavism
+  mountPath: {{ .Values.atavism.config }}
 {{- with .Values.extraVolumeMounts }}
 {{ toYaml . }}
 {{- end }}
