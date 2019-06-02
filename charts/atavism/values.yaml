@@ -28,7 +28,7 @@ auth:
         port: 9005
         targetPort: 9005
         protocol: TCP
-      - name: mastertcp
+      - name: mastertcp2
         port: 9010
         targetPort: 9010
         protocol: TCP
