@@ -43,7 +43,7 @@ args: [{{ .Values.type }}]
 env:
 - name: DEFAULT_AUTH_PROPERTYFILE
   value: {{ .Values.atavism.config }}/auth.properties
-- name: DEFAULT_AO_PROPERTIES_FILE
+- name: DEFAULT_AO_PROPERTY_FILE
   value: {{ .Values.atavism.config }}/world.properties
 volumeMounts:
 - name: properties-volume
