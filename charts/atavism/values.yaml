@@ -2,22 +2,105 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+license:
+  email: your@email.org
+  key: license-key
+
 auth:
   type: auth
+  ports:
+    pod:
+      - name: mastertcp
+        containerPort: 9005
+        protocol: TCP
+      - name: socketpolicy
+        containerPort: 5090
+        protocol: TCP
+      - name: masterrdp
+        containerPort: 9010
+        protocol: UDP
+    service:
+      - name: mastertcp
+        port: 9005
+        targetPort: 9005
+        protocol: TCP
+      - name: socketpolicy
+        port: 5090
+        targetPort: 9005
+        protocol: 5090
+      - name: masterrdp
+        port: 9010
+        targetPort: 9010
+        protocol: UDP
 domain:
   type: domain
+  ports:
+    pod:
+      - name: msgsvr
+        containerPort: 20377
+        protocol: TCP
+    service:
+      - name: msgsvr
+        port: 20377
+        targetPort: 20377
+        protocol: TCP
 login:
   type: login
+  ports:
+    pod:
+      - name: login
+        containerPort: 5042
+        protocol: TCP
+    service:
+      - port: 5042
+        targetPort: 5042
+        protocol: TCP
+        name: login
+wmgr:
+  type: wmgr
+  ports:
+    pod:
+      - name: wmgr
+        containerPort: 5042
+        protocol: TCP
+    service:
+      - port: 5042
+        targetPort: 5042
+        protocol: TCP
+        name: wmgr
+proxy:
+  type: proxy
+  ports:
+    pod:
+      - name: proxy
+        containerPort: 5052
+        protocol: TCP
+      - name: flashpolicy
+        containerPort: 5041
+        protocol: TCP
+      - name: voice
+        containerPort: 5067
+        protocol: TCP
+    service:
+      - name: proxy
+        port: 5052
+        targetPort: 5052
+        protool: TCP
+      - name: flashpolicy
+        port: 5041
+        targetPort: 5041
+        protool: TCP
+      - name: voice
+        port: 5067
+        targetPort: 5067
+        protool: TCP
+
 combat:
   type: combat
 instance:
   type: instance
 objmgr:
   type: objmgr
-wmgr:
-  type: wmgr
-proxy:
-  type: proxy
 mob:
   type: mob
 arena:

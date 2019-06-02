@@ -28,3 +28,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+ports:
+  pod: []
+  service: []

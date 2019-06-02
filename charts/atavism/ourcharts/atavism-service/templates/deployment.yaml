@@ -13,6 +13,9 @@ spec:
       containers:
       - {{ template "common.container" (list . "workstation.deployment.container") }}
       volumes:
+      - name: properties-volume
+        configMap:
+          name: atavism-properties
       {{- with .Values.extraVolumes }}
       {{ toYaml . | nindent 6 }}
       {{- end }}
@@ -23,8 +26,9 @@ spec:
 
 {{- define "workstation.deployment.container" -}}
 ports:
-- name: ssh
-  containerPort: 22
+{{- with .Values.ports.pod }}
+{{ toYaml . }}
+{{- end }}
 #readinessProbe:
 #  tcpSocket:
 #    port: 22
@@ -37,6 +41,8 @@ ports:
 #  periodSeconds: 20
 args: [{{ .Values.type }}]
 volumeMounts:
+- name: properties-volume
+  mountPath: /etc/atavism
 {{- with .Values.extraVolumeMounts }}
 {{ toYaml . }}
 {{- end }}

@@ -80,6 +80,10 @@ steps:
   - '--replace'
   - '--debug'
   - '--timeout=1200'
+  - '--set'
+  - 'license.email=${_LICENSE_EMAIL}'
+  - '--set'
+  - 'license.key=${_LICENSE_KEY}'
   - '--namespace=atavism-test-$SHORT_SHA'
 # Need to sign with pgp first
 #  - '--verify'
@@ -234,3 +238,8 @@ steps:
   - 'TILLER_NAMESPACE=kube-system'
   waitFor:
   - 'HelmProdUpgrade'
+
+
+substitutions:
+  _LICENSE_EMAIL: your@email.com
+  _LICENSE_KEY: license-key
