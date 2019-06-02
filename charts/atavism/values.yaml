@@ -85,15 +85,15 @@ proxy:
       - name: proxy
         port: 5052
         targetPort: 5052
-        protool: TCP
+        protocol: TCP
       - name: flashpolicy
         port: 5041
         targetPort: 5041
-        protool: TCP
+        protocol: TCP
       - name: voice
         port: 5067
         targetPort: 5067
-        protool: TCP
+        protocol: TCP
 
 combat:
   type: combat
