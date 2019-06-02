@@ -4,19 +4,15 @@ set -xe
 
 pushd /opt/atavism_server/bin
 
-mkdir -p run/master
-mkdir -p run/world
-
 case "$1" in
     auth)
-        CMD="./auth.sh -v"
+        sed -i -e 's/    &//' auth.sh
+        CMD="./auth.sh"
         $CMD start
-        reptyr -L -T $(<run/master/auth.pid)
         ;;
     *)
-        CMD="./world.sh -v"
-        jobs
+        sed -i -e 's/    &//' world.sh
+        CMD="./world.sh"
         $CMD $1
-        reptyr -L -T $(<run/world/$1.pid)
         ;;
 esac
