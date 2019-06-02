@@ -201,7 +201,8 @@ atavismdb:
 
   metrics:
     enabled: true
-    serviceMonitor: true
+    serviceMonitor: 
+      enabled: true
 
   livenessProbe:
     initialDelaySeconds: 120
@@ -251,7 +252,8 @@ masterdb:
 
   metrics:
     enabled: true
-    serviceMonitor: true
+    serviceMonitor: 
+      enabled: true
 
 contentdb:
   nameOverride: contentdb
@@ -298,7 +300,8 @@ contentdb:
 
   metrics:
     enabled: true
-    serviceMonitor: true
+    serviceMonitor: 
+      enabled: true
 
 admindb:
   nameOverride: admindb
@@ -342,7 +345,8 @@ admindb:
 
   metrics:
     enabled: true
-    serviceMonitor: true
+    serviceMonitor: 
+      enabled: true
 
   livenessProbe:
     initialDelaySeconds: 120
