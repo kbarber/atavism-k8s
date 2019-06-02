@@ -41,9 +41,9 @@ ports:
 #  periodSeconds: 20
 args: [{{ .Values.type }}]
 env:
-- name: DEFAULT_AUTH_PROPERTYFILE
+- name: AUTH_PROPERTYFILE
   value: {{ .Values.atavism.config }}/auth.properties
-- name: DEFAULT_AO_PROPERTY_FILE
+- name: AO_PROPERTY_FILE
   value: {{ .Values.atavism.config }}/world.properties
 volumeMounts:
 - name: properties-volume
