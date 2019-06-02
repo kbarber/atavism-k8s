@@ -155,6 +155,7 @@ steps:
   waitFor:
   - 'HelmPackage'
   - 'ContainerPush'
+  - 'HelmCanaryTest'
 
 - id: 'HelmCanaryUpgradeTest'
   name: 'gcr.io/$PROJECT_ID/helm'

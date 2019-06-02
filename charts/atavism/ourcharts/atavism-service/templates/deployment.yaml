@@ -52,3 +52,16 @@ volumeMounts:
 {{ toYaml . }}
 {{- end }}
 {{- end -}}
+
+---
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{ .Values.type }}-vpa
+spec:
+  targetRef:
+    apiVersion: "extensions/v1beta1"
+    kind:       Deployment
+    name:       {{ .Vales.type }}
+  updatePolicy:
+    updateMode: "Off"
