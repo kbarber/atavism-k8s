@@ -12,7 +12,6 @@ substitutions:
   _HELM_TEST_TIMEOUT: '600'
   _HELM_INSTALL_TIMEOUT: '1800'
 
-
 options:
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'  
@@ -81,10 +80,6 @@ steps:
   - '--replace'
   - '--debug'
   - '--timeout=${_HELM_INSTALL_TIMEOUT}'
-  - '--set'
-  - 'license.email=${_LICENSE_EMAIL}'
-  - '--set'
-  - 'license.key=${_LICENSE_KEY}'
   - '--namespace'
   - $_HELM_TEST_NAMESPACE
   - '--wait'
