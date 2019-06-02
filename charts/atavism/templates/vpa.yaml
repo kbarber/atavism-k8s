@@ -41,11 +41,11 @@ spec:
 apiVersion: autoscaling.k8s.io/v1beta2
 kind: VerticalPodAutoscaler
 metadata:
-  name: authdb-vpa
+  name: contentdb-vpa
 spec:
   targetRef:
     apiVersion: "extensions/v1beta1"
     kind:       Deployment
-    name:       authdb
+    name:       contentdb
   updatePolicy:
     updateMode: "Off"
