@@ -6,11 +6,13 @@ pushd /opt/atavism_server/bin
 
 case "$1" in
     auth)
-        CMD="./auth.sh -vC"
+        CMD="./auth.sh -v"
         $CMD start
+        jobs
         ;;
     *)
-        CMD="./world.sh -vC"
+        CMD="./world.sh -v"
+        jobs
         $CMD $1
         ;;
 esac

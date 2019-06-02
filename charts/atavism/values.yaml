@@ -13,25 +13,34 @@ auth:
       - name: mastertcp
         containerPort: 9005
         protocol: TCP
-      - name: socketpolicy
-        containerPort: 5090
+      - name: mastertcp2
+        containerPort: 9010
         protocol: TCP
       - name: masterrdp
         containerPort: 9010
         protocol: UDP
+      - name: socketpolicy
+        containerPort: 5090
+        protocol: TCP
+
     service:
       - name: mastertcp
         port: 9005
         targetPort: 9005
         protocol: TCP
-      - name: socketpolicy
-        port: 5090
-        targetPort: 5090
+      - name: mastertcp
+        port: 9010
+        targetPort: 9010
         protocol: TCP
       - name: masterrdp
         port: 9010
         targetPort: 9010
         protocol: UDP
+      - name: socketpolicy
+        port: 5090
+        targetPort: 5090
+        protocol: TCP
+
 domain:
   type: domain
   ports:
@@ -44,6 +53,7 @@ domain:
         port: 20377
         targetPort: 20377
         protocol: TCP
+
 login:
   type: login
   ports:
@@ -56,6 +66,7 @@ login:
         targetPort: 5042
         protocol: TCP
         name: login
+
 wmgr:
   type: wmgr
   ports:
@@ -68,6 +79,7 @@ wmgr:
         targetPort: 5042
         protocol: TCP
         name: wmgr
+
 proxy:
   type: proxy
   ports:
@@ -95,12 +107,24 @@ proxy:
         targetPort: 5067
         protocol: TCP
 
+objmgr:
+  type: objmgr
+  ports:
+    pod:
+      - name: objmgr
+        containerPort: 45093
+        protocol: TCP
+    service:
+      - port: 45093
+        targetPort: 45093
+        protocol: TCP
+        name: wmgr
+
 combat:
   type: combat
 instance:
   type: instance
-objmgr:
-  type: objmgr
+
 mob:
   type: mob
 arena:
