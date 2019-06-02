@@ -117,23 +117,23 @@ atavismdb:
   mysqlPassword: atavism
   mysqlDatabase: atavism
 
-  extraInitContainers:
-  - name: 'copy-init-sql-content'
-    image: 'gcr.io/atavism/atavism_server:v2019.1.2'
-    command:
-    - cp
-    - '/opt/atavism_server/sql/New_Install_with_Demo_Data/atavism.sql'
-    - '/docker-entrypoint-initdb.d'
-    volumeMounts:
-      - name: migrations
-        mountPath: /docker-entrypoint-initdb.d
+  extraInitContainers: |
+    - name: 'copy-init-sql-content'
+      image: 'gcr.io/atavism/atavism_server:v2019.1.2'
+      command:
+      - cp
+      - '/opt/atavism_server/sql/New_Install_with_Demo_Data/atavism.sql'
+      - '/docker-entrypoint-initdb.d'
+      volumeMounts:
+        - name: migrations
+          mountPath: /docker-entrypoint-initdb.d
 
-  extraVolumes:
+  extraVolumes: |
     - name: migrations
       persistentVolumeClaim:
         claimName: atavismdb-migrations
 
-  extraVolumeMounts:
+  extraVolumeMounts: |
     - name: migrations
       mountPath: /docker-entrypoint-initdb.d
 
@@ -155,23 +155,23 @@ masterdb:
   mysqlPassword: atavism
   mysqlDatabase: master
 
-  extraInitContainers:
-  - name: 'copy-init-sql-content'
-    image: 'gcr.io/atavism/atavism_server:v2019.1.2'
-    command:
-    - cp
-    - '/opt/atavism_server/sql/New_Install_with_Demo_Data/master.sql'
-    - '/docker-entrypoint-initdb.d'
-    volumeMounts:
-      - name: migrations
-        mountPath: /docker-entrypoint-initdb.d
+  extraInitContainers: |
+    - name: 'copy-init-sql-content'
+      image: 'gcr.io/atavism/atavism_server:v2019.1.2'
+      command:
+      - cp
+      - '/opt/atavism_server/sql/New_Install_with_Demo_Data/master.sql'
+      - '/docker-entrypoint-initdb.d'
+      volumeMounts:
+        - name: migrations
+          mountPath: /docker-entrypoint-initdb.d
 
-  extraVolumes:
+  extraVolumes: |
     - name: migrations
       persistentVolumeClaim:
         claimName: atavismdb-migrations
 
-  extraVolumeMounts:
+  extraVolumeMounts: |
     - name: migrations
       mountPath: /docker-entrypoint-initdb.d
 
@@ -193,23 +193,23 @@ contentdb:
   mysqlPassword: atavism
   mysqlDatabase: content
 
-  extraInitContainers:
-  - name: 'copy-init-sql-content'
-    image: 'gcr.io/atavism/atavism_server:v2019.1.2'
-    command:
-    - cp
-    - '/opt/atavism_server/sql/New_Install_with_Demo_Data/world_content.sql'
-    - '/docker-entrypoint-initdb.d'
-    volumeMounts:
-      - name: migrations
-        mountPath: /docker-entrypoint-initdb.d
+  extraInitContainers: |
+    - name: 'copy-init-sql-content'
+      image: 'gcr.io/atavism/atavism_server:v2019.1.2'
+      command:
+      - cp
+      - '/opt/atavism_server/sql/New_Install_with_Demo_Data/world_content.sql'
+      - '/docker-entrypoint-initdb.d'
+      volumeMounts:
+        - name: migrations
+          mountPath: /docker-entrypoint-initdb.d
 
-  extraVolumes:
+  extraVolumes: |
     - name: migrations
       persistentVolumeClaim:
         claimName: atavismdb-migrations
 
-  extraVolumeMounts:
+  extraVolumeMounts: |
     - name: migrations
       mountPath: /docker-entrypoint-initdb.d
 
@@ -231,23 +231,23 @@ admindb:
   mysqlPassword: atavism
   mysqlDatabase: atavism
 
-  extraInitContainers:
-  - name: 'copy-init-sql-content'
-    image: 'gcr.io/atavism/atavism_server:v2019.1.2'
-    command:
-    - cp
-    - '/opt/atavism_server/sql/New_Install_with_Demo_Data/admin.sql'
-    - '/docker-entrypoint-initdb.d'
-    volumeMounts:
-      - name: migrations
-        mountPath: /docker-entrypoint-initdb.d
+  extraInitContainers: |
+    - name: 'copy-init-sql-content'
+      image: 'gcr.io/atavism/atavism_server:v2019.1.2'
+      command:
+      - cp
+      - '/opt/atavism_server/sql/New_Install_with_Demo_Data/admin.sql'
+      - '/docker-entrypoint-initdb.d'
+      volumeMounts:
+        - name: migrations
+          mountPath: /docker-entrypoint-initdb.d
 
-  extraVolumes:
+  extraVolumes: |
     - name: migrations
       persistentVolumeClaim:
         claimName: atavismdb-migrations
 
-  extraVolumeMounts:
+  extraVolumeMounts: |
     - name: migrations
       mountPath: /docker-entrypoint-initdb.d
 
