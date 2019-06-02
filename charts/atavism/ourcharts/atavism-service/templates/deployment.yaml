@@ -41,6 +41,8 @@ ports:
 #  periodSeconds: 20
 args: [{{ .Values.type }}]
 env:
+- name: AO_HOME
+  value: /opt/atavism_server/
 - name: AUTH_PROPERTYFILE
   value: {{ .Values.atavism.config }}/auth.properties
 - name: AO_PROPERTY_FILE

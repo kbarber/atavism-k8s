@@ -1,0 +1,31 @@
+external-dns:
+  publishInternalServices: true
+  provider: google
+  google:
+    project: "atavism"
+  domainFilters: []
+  zoneIdFilters: []
+  interval: "1m"
+  registry: "txt"
+  txtOwnerId: "atavism"
+  dryRun: false
+  policy: sync
+  logLevel: debug
+  resources:
+    limits:
+      memory: 50Mi
+      cpu: 10m
+    requests:
+      memory: 50Mi
+      cpu: 10m
+  rbac:
+    create: true
+  service:
+    clusterIP: ""
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 7979
+    type: ClusterIP
+  priorityClassName: ""
+

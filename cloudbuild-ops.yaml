@@ -1,0 +1,191 @@
+---
+#############
+# VARIABLES #
+#############
+substitutions:
+  _HELM_REPO_NAME: bobsh
+  _HELM_REPO_URL: gs://bobsh/charts
+  _HELM_CHART_NAME: ops
+  _HELM_TEST_NAMESPACE: ops-test
+  _HELM_ACCEPTANCE_NAMESPACE: ops-acceptance
+  _HELM_PROD_NAMESPACE: ops
+  _HELM_TEST_TIMEOUT: '600'
+  _HELM_INSTALL_TIMEOUT: '1800'
+
+
+options:
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'  
+    - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+    - TILLERLESS=false
+    - 'TILLER_NAMESPACE=kube-system'
+    - 'GCS_PLUGIN_VERSION=0.2.0'
+    - 'HELM_REPO_NAME=incubator'
+    - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com'
+
+steps:
+- &helmStep
+  id: 'HelmLint'
+  args:
+  - lint
+  - '--debug'
+  waitFor:
+    - 'FixContainerVersion'
+  dir: 'charts/${_HELM_CHART_NAME}'
+  name: 'gcr.io/${PROJECT_ID}/helm'
+
+- <<: *helmStep
+  id: 'HelmPackage'
+  args:
+    - package
+    - '--debug'
+    - '--dependency-update'
+    - '--version'
+    - '1.0.0-${SHORT_SHA}'
+    - '.'
+  waitFor:
+  - FixContainerVersion
+
+- <<: *helmStep
+  id: 'HelmGcsPush'
+  args:
+  - gcs
+  - push
+  - &helmPackage '$_HELM_CHART_NAME-1.0.0-$SHORT_SHA.tgz'
+  - ${_HELM_REPO_NAME}
+  - '--retry'
+  - '--debug'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+    - 'TILLERLESS=false'
+    - 'TILLER_NAMESPACE=kube-system'
+    - 'GCS_PLUGIN_VERSION=0.2.0'
+    - 'HELM_REPO_NAME=${_HELM_REPO_NAME}'
+    - 'HELM_REPO_URL=${_HELM_REPO_URL}'
+
+  waitFor:
+  - 'HelmPackage'
+  - 'HelmLint'
+
+#######################
+# CHART RELEASE TESTS #
+#######################
+
+- <<: *helmStep
+  id: 'HelmTestRelease'
+  args:
+  - install
+  - *helmPackage
+  - '--atomic'
+  - '--render-subchart-notes'
+  - '--name'
+  - &helmTestNamespaceGen $_HELM_TEST_NAMESPACE-$SHORT_SHA
+  - '--replace'
+  - '--debug'
+  - '--timeout=${_HELM_INSTALL_TIMEOUT}'
+  - '--set'
+  - 'license.email=${_LICENSE_EMAIL}'
+  - '--set'
+  - 'license.key=${_LICENSE_KEY}'
+  - '--namespace'
+  - $_HELM_TEST_NAMESPACE
+  - '--wait'
+  waitFor:
+  - 'HelmPackage'
+  - 'HelmLint'
+  - 'ContainerPush'
+
+- <<: *helmStep
+  id: 'HelmTestReleaseTest'
+  args:
+  - test
+  - *helmTestNamespaceGen
+  - '--cleanup'
+  - '--parallel'
+  - '--debug'
+  - '--timeout'
+  - $_HELM_TEST_TIMEOUT
+  waitFor:
+  - 'HelmTestRelease'
+
+- <<: *helmStep
+  id: 'HelmTestReleaseDelete'
+  args:
+  - delete
+  - '--debug'
+  - '--purge'
+  - *helmTestNamespaceGen
+  waitFor:
+  - 'HelmTestReleaseTest'
+
+#######################
+# ACCEPTANCE ROLLOUT  #
+#######################
+
+
+- <<: *helmStep
+  id: 'HelmAcceptanceUpgrade'
+  args:
+  - upgrade
+  - ${_HELM_ACCEPTANCE_NAMESPACE}
+  - *helmPackage
+  - '--render-subchart-notes'
+  - '--atomic'
+  - '--install'
+  - '--debug'
+  - '--reset-values'
+  - '--cleanup-on-fail'
+  - '--namespace=${_HELM_ACCEPTANCE_NAMESPACE}'
+  - '--timeout=${_HELM_INSTALL_TIMEOUT}'
+  - '--wait'
+  waitFor:
+  - 'HelmTestReleaseTest'
+
+- <<: *helmStep
+  id: 'HelmAcceptanceUpgradeTest'
+  args:
+  - test
+  - ${_HELM_ACCEPTANCE_NAMESPACE}
+  - '--cleanup'
+  - '--parallel'
+  - '--debug'
+  - '--timeout=${_HELM_TEST_TIMEOUT}'
+  waitFor:
+  - 'HelmAcceptanceUpgrade'
+
+
+#######################
+# PRODUCTION ROLLOUT  #
+#######################
+
+
+- <<: *helmStep
+  id: 'HelmProdUpgrade'
+  args:
+  - upgrade
+  - ${_HELM_PROD_NAMESPACE}
+  - *helmPackage
+  - '--render-subchart-notes'
+  - '--atomic'
+  - '--install'
+  - '--reset-values'
+  - '--cleanup-on-fail'
+  - '--namespace=${_HELM_PROD_NAMESPACE}'
+  - '--wait'
+  - '--timeout=${_HELM_INSTALL_TIMEOUT}'
+  - '--debug'
+  waitFor:
+  - 'HelmAcceptanceUpgradeTest'
+
+- <<: *helmStep
+  id: 'HelmProdUpgradeTest'
+  args:
+  - test
+  - ${_HELM_PROD_NAMESPACE}
+  - '--cleanup'
+  - '--parallel'
+  - '--debug'
+  - '--timeout=${_HELM_TEST_TIMEOUT}'
+  waitFor:
+  - 'HelmProdUpgrade'
