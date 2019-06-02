@@ -165,11 +165,11 @@ atavismdb:
 
   resources:
     requests:
-      memory: 256M
-      cpu: 100m
+      memory: 272M
+      cpu: 25m
     limits:
-      memory: 256M
-      cpu: 100m
+      memory: 272M
+      cpu: 25m
 
 masterdb:
   nameOverride: masterdb
@@ -202,11 +202,11 @@ masterdb:
 
   resources:
     requests:
-      memory: 256M
-      cpu: 100m
+      memory: 272M
+      cpu: 25m
     limits:
-      memory: 256M
-      cpu: 100m
+      memory: 272M
+      cpu: 25m
 
 contentdb:
   nameOverride: contentdb
@@ -276,8 +276,8 @@ admindb:
 
   resources:
     requests:
-      memory: 256M
-      cpu: 100m
+      memory: 272M
+      cpu: 25m
     limits:
-      memory: 256M
-      cpu: 100m
+      memory: 272M
+      cpu: 25m
