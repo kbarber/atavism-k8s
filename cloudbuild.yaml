@@ -1,81 +1,53 @@
+---
 #############
 # VARIABLES #
 #############
 substitutions:
   _LICENSE_EMAIL: your@email.com
   _LICENSE_KEY: license-key
-  _CLOUDSDK_COMPUTE_ZONE: europe-west2-b
-  _CLOUDSDK_CONTAINER_CLUSTER: atavism
-  _TILLERLESS: false
-  _TILLER_NAMESPACE: kube-system
-  _GCS_PLUGIN_VERSION: 0.2.0
   _HELM_REPO_NAME: bobsh
   _HELM_REPO_URL: gs://bobsh/charts
   _HELM_CHART_NAME: atavism
-  _HELM_CHART_VERSION: "1.0.0-${SHORT_SHA}"
-  _HELM_PACKAGE: "${_HELM_CHART_NAME}-${_HELM_VERSION}.tgz"
   _CONTAINER_NAME: "atavism"
-  _CONTAINER_VERSION: "${SHORT_SHA}-git"
-  _CONTAINER_URL: "gcr.io/${PROJECT_ID}/${_CONTAINER_NAME}:${_CONTAINER_VERSION}"
-  _HELM_CONTAINER_URL: "gcr.io/$PROJECT_ID/helm"
-  _HELM_TEST_NAMESPACE: "atavism-test-${SHORT_SHA}"
+  _HELM_TEST_NAMESPACE: "atavism-test"
   _HELM_ACCEPTANCE_NAMESPACE: "atavism-acceptance"
   _HELM_PROD_NAMESPACE: "atavism"
-  _HELM_TEST_TIMEOUT: 600
-  _HELM_INSTALL_TIMEOUT: 1800
+  _HELM_TEST_TIMEOUT: '600'
+  _HELM_INSTALL_TIMEOUT: '1800'
 
-#### BUILD STEPS ####
-
-helmEnv: &helmEnv
-  - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
-  - 'TILLERLESS=${_TILLERLESS}'
-  - 'TILLER_NAMESPACE=${_TILLER_NAMESPACE}'
-  - 'GCS_PLUGIN_VERSION=${_GCS_PLUGIN_VERSION}'
-
-helmRepoIncubator: &helmRepoIncubator
-  - 'HELM_REPO_NAME=incubator'
-  - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com '
-
-helmRepoOurs: &helmRepoOurs
-  - 'HELM_REPO_NAME=${_HELM_REPO_NAME}'
-  - 'HELM_REPO_URL=${_HELM_REPO_URL}'
-
-helmStep: &helmStep
-  dir: 'charts/${_HELM_CHART_NAME}'
-  name: ${_HELM_CONTAINER_URL}
+options:
   env:
-    <<: *helmEnv
-  waitFor: ['-']
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+    - 'TILLERLESS=false'
+    - 'TILLER_NAMESPACE=kube-system'
+    - 'GCS_PLUGIN_VERSION=0.2.0'
+    - 'HELM_REPO_NAME=incubator'
+    - 'HELM_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com'
 
-dockerStep: &dockerStep
-  dir: 'containers/${_CONTAINER_NAME}'
-  name: 'gcr.io/cloud-builders/docker'
-  waitFor: ['-']
-
-ubuntuStep: &ubuntuStep
-  name: 'ubuntu:18.04'
-  waitFor: ['-']
-
-steps:
 
 #############
 # CONTAINER #
 #############
+steps:
 
-- <<: *dockerStep
+- &dockerStep
   id: 'ContainerBuild'
   args:
   - 'build'
   - '-t'
-  - ${_CONTAINER_URL}
+  - &containerUrl 'gcr.io/${PROJECT_ID}/${_CONTAINER_NAME}:${SHORT_SHA}-git'
   - '.'
+  dir: 'containers/${_CONTAINER_NAME}'
+  name: 'gcr.io/cloud-builders/docker'
+  waitFor: ['-']
+
 
 - <<: *dockerStep
   id: ContainerPush
   args:
   - 'push'
-  - ${_CONTAINER_URL}
+  - *containerUrl
   waitFor:
   - 'ContainerBuild'
 
@@ -84,17 +56,19 @@ steps:
 # CHART PACKAGING AND SHIPPING #
 ################################
 
-- <<: *ubuntuStep
-  id: 'FixContainerVersion'
+- id: 'FixContainerVersion'
   dir: 'charts/${_HELM_CHART_NAME}/ourcharts/atavism-service'
   entrypoint: 'sed'
   args:
     - '-i'
     - '-e'
-    - 's/latest/${_CONTAINER_VERSION}/g'
+    - 's/latest/${SHORT_SHA}-git/g'
     - 'values.yaml'
+  name: 'ubuntu:18.04'
+  waitFor: ['-']
 
-- <<: *helmStep
+
+- &helmStep
   id: 'HelmLint'
   args:
   - lint
@@ -102,19 +76,18 @@ steps:
   #- '--strict'
   waitFor:
     - 'FixContainerVersion'
+  dir: 'charts/${_HELM_CHART_NAME}'
+  name: 'gcr.io/${PROJECT_ID}/helm'
 
 - <<: *helmStep
   id: 'HelmPackage'
   args:
-  - package
-  - '--debug'
-  - '--dependency-update'
-  - '--version=${_HELM_CHART_VERSION}'
-  #- '--keyring=/foo.gpg'
-  #- '--sign'
-  - '.'
-  env:
-    <<: [*helmEnv, *helmRepoIncubator]
+    - package
+    - '--debug'
+    - '--dependency-update'
+    - '--version'
+    - &helmChartVersion '1.0.0-${SHORT_SHA}'
+    - '.'
   waitFor:
   - FixContainerVersion
 
@@ -123,12 +96,14 @@ steps:
   args:
   - gcs
   - push
-  - ${_HELM_PACKAGE}
+  - &helmPackage '$_HELM_CHART_NAME-1.0.0-$SHORT_SHA.tgz'
   - ${_HELM_REPO_NAME}
   - '--retry'
   - '--debug'
   env:
-    <<: [*helmEnv, *helmRepoOurs]
+    - 'HELM_REPO_NAME=${_HELM_REPO_NAME}'
+    - 'HELM_REPO_URL=${_HELM_REPO_URL}'
+
   waitFor:
   - 'HelmPackage'
   - 'HelmLint'
@@ -141,9 +116,10 @@ steps:
   id: 'HelmTestRelease'
   args:
   - install
-  - ${_HELM_PACKAGE}
+  - *helmPackage
   - '--atomic'
-  - '--name=${_HELM_TEST_NAMESPACE}'
+  - '--name'
+  - &helmTestNamespaceGen $_HELM_TEST_NAMESPACE-$SHORT_SHA
   - '--replace'
   - '--debug'
   - '--timeout=${_HELM_INSTALL_TIMEOUT}'
@@ -151,7 +127,8 @@ steps:
   - 'license.email=${_LICENSE_EMAIL}'
   - '--set'
   - 'license.key=${_LICENSE_KEY}'
-  - '--namespace=${_HELM_TEST_NAMESPACE}'
+  - '--namespace'
+  - *helmTestNamespaceGen
   #- '--verify'
   - '--wait'
   waitFor:
@@ -163,11 +140,12 @@ steps:
   id: 'HelmTestReleaseTest'
   args:
   - test
-  - ${_HELM_TEST_NAMESPACE}
+  - *helmTestNamespaceGen
   - '--cleanup'
   - '--parallel'
   - '--debug'
-  - '--timeout=${_HELM_TEST_TIMEOUT'
+  - '--timeout'
+  - $_HELM_TEST_TIMEOUT
   waitFor:
   - 'HelmTestRelease'
 
@@ -177,7 +155,7 @@ steps:
   - delete
   - '--debug'
   - '--purge'
-  - ${_HELM_TEST_NAMESPACE}
+  - *helmTestNamespaceGen
   waitFor:
   - 'HelmTestReleaseTest'
 
@@ -191,7 +169,7 @@ steps:
   args:
   - upgrade
   - ${_HELM_ACCEPTANCE_NAMESPACE}
-  - ${_HELM_PACKAGE}
+  - *helmPackage
   - '--atomic'
   - '--install'
   - '--debug'
@@ -220,12 +198,12 @@ steps:
 #######################
 
 
-- <<: &helmStep
+- <<: *helmStep
   id: 'HelmProdUpgrade'
   args:
   - upgrade
   - ${_HELM_PROD_NAMESPACE}
-  - ${_HELM_PACKAGE}
+  - *helmPackage
   - '--atomic'
   - '--install'
   - '--namespace=${_HELM_PROD_NAMESPACE}'
@@ -236,7 +214,7 @@ steps:
   waitFor:
   - 'HelmAcceptanceUpgradeTest'
 
-- <<: &helmStep
+- <<: *helmStep
   id: 'HelmProdUpgradeTest'
   args:
   - test
