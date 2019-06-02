@@ -29,8 +29,7 @@ steps:
   args:
   - lint
   - '--debug'
-  waitFor:
-    - 'FixContainerVersion'
+  waitFor: ['-']
   dir: 'charts/${_HELM_CHART_NAME}'
   name: 'gcr.io/${PROJECT_ID}/helm'
 
@@ -43,8 +42,6 @@ steps:
     - '--version'
     - '1.0.0-${SHORT_SHA}'
     - '.'
-  waitFor:
-  - FixContainerVersion
 
 - <<: *helmStep
   id: 'HelmGcsPush'
@@ -94,7 +91,6 @@ steps:
   waitFor:
   - 'HelmPackage'
   - 'HelmLint'
-  - 'ContainerPush'
 
 - <<: *helmStep
   id: 'HelmTestReleaseTest'
