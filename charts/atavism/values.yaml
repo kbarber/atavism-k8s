@@ -130,8 +130,7 @@ atavismdb:
 
   extraVolumes: |
     - name: migrations
-      persistentVolumeClaim:
-        claimName: atavismdb-migrations
+      emptyDir: {}
 
   extraVolumeMounts: |
     - name: migrations
@@ -168,8 +167,7 @@ masterdb:
 
   extraVolumes: |
     - name: migrations
-      persistentVolumeClaim:
-        claimName: atavismdb-migrations
+      emptyDir: {}
 
   extraVolumeMounts: |
     - name: migrations
@@ -206,8 +204,7 @@ contentdb:
 
   extraVolumes: |
     - name: migrations
-      persistentVolumeClaim:
-        claimName: atavismdb-migrations
+      emptyDir: {}
 
   extraVolumeMounts: |
     - name: migrations
@@ -244,8 +241,7 @@ admindb:
 
   extraVolumes: |
     - name: migrations
-      persistentVolumeClaim:
-        claimName: atavismdb-migrations
+      emptyDir: {}
 
   extraVolumeMounts: |
     - name: migrations
