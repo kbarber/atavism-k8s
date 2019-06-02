@@ -226,7 +226,7 @@ admindb:
   fullnameOverride: admindb
   mysqlUser: atavism
   mysqlPassword: atavism
-  mysqlDatabase: atavism
+  mysqlDatabase: admin
 
   extraInitContainers: |
     - name: 'copy-init-sql-content'
