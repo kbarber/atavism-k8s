@@ -158,3 +158,31 @@ data:
     atavism.plugin_dep.Voxel=
     atavism.plugin_dep.Weather=
     atavism.plugin_dep.Auction=Inventory
+  authlog.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="error" name="AuthServer" packages="">
+      <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+          <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+      </Appenders>
+      <Loggers>
+        <Root level="error">
+          <AppenderRef ref="Console"/>
+        </Root>
+      </Loggers>
+    </Configuration>
+  worldlog.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="error" name="WorldServer" packages="">
+      <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+          <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+      </Appenders>
+      <Loggers>
+        <Root level="error">
+          <AppenderRef ref="Console"/>
+        </Root>
+      </Loggers>
+    </Configuration>
