@@ -101,6 +101,11 @@ steps:
   - '--retry'
   - '--debug'
   env:
+    - 'CLOUDSDK_COMPUTE_ZONE=europe-west2-b'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=atavism'
+    - 'TILLERLESS=false'
+    - 'TILLER_NAMESPACE=kube-system'
+    - 'GCS_PLUGIN_VERSION=0.2.0'
     - 'HELM_REPO_NAME=${_HELM_REPO_NAME}'
     - 'HELM_REPO_URL=${_HELM_REPO_URL}'
 
