@@ -199,6 +199,13 @@ atavismdb:
   service:
     type: LoadBalancer
 
+  metrics:
+    enabled: true
+    serviceMonitor: true
+
+  livenessProbe:
+    initialDelaySeconds: 120
+
 masterdb:
   nameOverride: masterdb
   fullnameOverride: masterdb
@@ -238,6 +245,13 @@ masterdb:
 
   service:
     type: LoadBalancer
+
+  livenessProbe:
+    initialDelaySeconds: 120
+
+  metrics:
+    enabled: true
+    serviceMonitor: true
 
 contentdb:
   nameOverride: contentdb
@@ -279,6 +293,13 @@ contentdb:
   service:
     type: LoadBalancer
 
+  livenessProbe:
+    initialDelaySeconds: 120
+
+  metrics:
+    enabled: true
+    serviceMonitor: true
+
 admindb:
   nameOverride: admindb
   fullnameOverride: admindb
@@ -318,3 +339,10 @@ admindb:
 
   service:
     type: LoadBalancer
+
+  metrics:
+    enabled: true
+    serviceMonitor: true
+
+  livenessProbe:
+    initialDelaySeconds: 120
