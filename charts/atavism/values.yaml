@@ -243,3 +243,4 @@ admindb:
       volumeMounts:
         - name: migrations
           mountPath: /docker-entrypoint-initdb.d
+
