@@ -150,7 +150,7 @@ atavismdb: &db
       image: 'gcr.io/atavism/atavism_server:v2019.1.2'
       command:
       - cp
-      - '/opt/atavism_server/sql/New_Install_with_Demo_Data/atavism.sql'
+      - '/opt/atavism_server/sql/New_Install_Core/atavism.sql'
       - '/docker-entrypoint-initdb.d'
       volumeMounts:
         - name: migrations
@@ -203,7 +203,7 @@ masterdb:
       image: 'gcr.io/atavism/atavism_server:v2019.1.2'
       command:
       - cp
-      - '/opt/atavism_server/sql/New_Install_with_Demo_Data/master.sql'
+      - '/opt/atavism_server/sql/New_Install_Core/master.sql'
       - '/docker-entrypoint-initdb.d'
       volumeMounts:
         - name: migrations
@@ -221,7 +221,7 @@ contentdb:
       image: 'gcr.io/atavism/atavism_server:v2019.1.2'
       command:
       - cp
-      - '/opt/atavism_server/sql/New_Install_with_Demo_Data/world_content.sql'
+      - '/opt/atavism_server/sql/New_Install_Core/world_content.sql'
       - '/docker-entrypoint-initdb.d'
       volumeMounts:
         - name: migrations
@@ -238,7 +238,7 @@ admindb:
       image: 'gcr.io/atavism/atavism_server:v2019.1.2'
       command:
       - cp
-      - '/opt/atavism_server/sql/New_Install_with_Demo_Data/admin.sql'
+      - '/opt/atavism_server/sql/New_Install_Core/admin.sql'
       - '/docker-entrypoint-initdb.d'
       volumeMounts:
         - name: migrations
