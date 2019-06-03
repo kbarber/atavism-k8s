@@ -8,31 +8,22 @@ license:
 auth:
   type: auth
   ports:
+    service:
+      type: LoadBalancer
     pod:
       - name: mastertcp
         containerPort: 9005
-      - name: mastertcp2
-        containerPort: 9010
       - name: masterrdp
         containerPort: 9010
         protocol: UDP
-      - name: socketpolicy
-        containerPort: 5090
-
     service:
       - name: mastertcp
         port: 9005
         targetPort: 9005
-      - name: mastertcp2
-        port: 9010
-        targetPort: 9010
       - name: masterrdp
         port: 9010
         targetPort: 9010
         protocol: UDP
-      - name: socketpolicy
-        port: 5090
-        targetPort: 5090
   resources:
     requests:
       memory: 262M
@@ -54,47 +45,12 @@ domain:
 
 login:
   type: login
-  ports:
-    pod:
-      - name: login
-        containerPort: 5042
-    service:
-      - port: 5042
-        targetPort: 5042
-        name: login
 
 wmgr:
   type: wmgr
-  ports:
-    pod:
-      - name: wmgr
-        containerPort: 5042
-    service:
-      - port: 5042
-        targetPort: 5042
-        name: wmgr
 
 proxy:
   type: proxy
-  ports:
-    pod:
-      - name: proxy
-        containerPort: 5052
-      - name: flashpolicy
-        containerPort: 5041
-      - name: voice
-        containerPort: 5067
-    service:
-      - name: proxy
-        port: 5052
-        targetPort: 5052
-      - name: flashpolicy
-        port: 5041
-        targetPort: 5041
-      - name: voice
-        port: 5067
-        targetPort: 5067
-
   resources:
     requests:
       memory: 262M
@@ -103,20 +59,8 @@ proxy:
       memory: 262M
       cpu: 109m
 
-  service:
-    type: LoadBalancer
-
 objmgr:
   type: objmgr
-  ports:
-    pod:
-      - name: objmgr
-        containerPort: 45093
-    service:
-      - port: 45093
-        targetPort: 45093
-        name: wmgr
-
   resources:
     requests:
       memory: 262M
