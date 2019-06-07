@@ -1,0 +1,6 @@
+{
+    "github.remoteName": "origin",
+    "github.upstream": "bobsh/atavism-k8s",
+    "github.customPullRequestDescription": "singleLine",
+    "github.autoPublish": true
+}
